@@ -13,7 +13,7 @@ A Sui Move smart contract for efficiently sending tokens to multiple recipients 
 
 ## Prerequisites
 
-- [Sui CLI](https://docs.sui.io/build/install) installed (version 1.20.0 or later)
+- [Sui CLI](https://docs.sui.io/build/install) installed 
 - A Sui wallet with sufficient balance for gas fees
 - Basic understanding of Sui Move and command-line operations
 
