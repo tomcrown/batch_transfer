@@ -13,7 +13,7 @@ A Sui Move smart contract for efficiently sending tokens to multiple recipients 
 
 ## Prerequisites
 
-- [Sui CLI](https://docs.sui.io/build/install) installed 
+- [Sui CLI](https://docs.sui.io/guides/developer/getting-started/sui-install) installed 
 - A Sui wallet with sufficient balance for gas fees
 - Basic understanding of Sui Move and command-line operations
 
@@ -161,16 +161,6 @@ sui client gas
 
 This shows all your coin objects with their IDs and amounts.
 
-### Merge Multiple Coins (Optional)
-
-If you have multiple small coin objects, merge them first:
-
-```bash
-sui client merge-coin \
-  --primary-coin <COIN_ID_1> \
-  --coin-to-merge <COIN_ID_2> \
-  --gas-budget 5000000
-```
 
 ## Using Different Coin Types
 
