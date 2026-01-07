@@ -28,6 +28,8 @@ public fun batch_transfer<T>(
 ) {
     let recipients_len = vector::length(&recipients);
     let amounts_len = vector::length(&amounts);
+    let sender = tx_context::sender(ctx);
+
 
     assert!(recipients_len == amounts_len, EMismatchedLengths);
     assert!(recipients_len > 0, EEmptyRecipients);
@@ -60,13 +62,13 @@ public fun batch_transfer<T>(
     
     if (balance::value(&balance) > 0) {
         let remaining_coin = coin::from_balance(balance, ctx);
-        transfer::public_transfer(remaining_coin, tx_context::sender(ctx));
+        transfer::public_transfer(remaining_coin, sender);
     } else {
         balance::destroy_zero(balance);
     };
     
     event::emit(BatchTransferEvent {
-        sender: tx_context::sender(ctx),
+        sender,
         total_recipients: recipients_len,
         total_amount,
         coin_type: type_name::with_defining_ids<T>()
@@ -87,6 +89,8 @@ public fun batch_transfer_equal<T>(
     let total_amount = amount_each * recipients_len;
     let coin_value = coin::value(&coin);
     assert!(coin_value >= total_amount, EInsufficientBalance);
+
+    let sender = tx_context::sender(ctx);
     
     let mut balance = coin::into_balance(coin);
     let mut i = 0;
@@ -101,13 +105,13 @@ public fun batch_transfer_equal<T>(
     
     if (balance::value(&balance) > 0) {
         let remaining_coin = coin::from_balance(balance, ctx);
-        transfer::public_transfer(remaining_coin, tx_context::sender(ctx));
+        transfer::public_transfer(remaining_coin, sender);
     } else {
         balance::destroy_zero(balance);
     };
     
     event::emit(BatchTransferEvent {
-        sender: tx_context::sender(ctx),
+        sender,
         total_recipients: recipients_len,
         total_amount,
         coin_type: type_name::with_defining_ids<T>()
