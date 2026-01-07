@@ -22,7 +22,7 @@ A Sui Move smart contract for efficiently sending tokens to multiple recipients 
 ### 1. Clone the Repository
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/tomcrown/batch_transfer.git
 cd batch_transfer
 ```
 
@@ -35,24 +35,7 @@ batch_transfer/
     └── batch_transfer.move
 ```
 
-### 3. Configure Move.toml
-
-Create a `Move.toml` file in the project root:
-
-```toml
-[package]
-name = "batch_transfer"
-version = "0.0.1"
-edition = "2024.beta"
-
-[dependencies]
-Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/mainnet" }
-
-[addresses]
-batch_transfer = "0x0"
-```
-
-### 4. Build the Contract
+### 3. Build the Contract
 
 ```bash
 sui move build
@@ -64,7 +47,7 @@ If successful, you should see:
 BUILDING batch_transfer
 ```
 
-### 5. Deploy to Sui Network
+### 4. Deploy to Sui Network
 
 #### Deploy to Testnet
 
@@ -241,22 +224,6 @@ sui client call \
   --gas-budget 10000000
 ```
 
-### Example 3: Using Programmable Transaction Blocks (PTB)
-
-For more complex operations, use PTBs:
-
-```bash
-sui client ptb \
-  --split-coins gas '[1000000000, 2000000000]' \
-  --assign splits \
-  --move-call <PACKAGE_ID>::batch_transfer::batch_transfer \
-    '<0x2::sui::SUI>' \
-    '@splits.0' \
-    '["0xrecipient1","0xrecipient2"]' \
-    '[1000000000,2000000000]' \
-  --gas-budget 10000000
-```
-
 ## Events
 
 Each successful batch transfer emits a `BatchTransferEvent` with:
@@ -270,19 +237,6 @@ Each successful batch transfer emits a `BatchTransferEvent` with:
 }
 ```
 
-### Viewing Events
-
-After a transaction, view events using:
-
-```bash
-sui client events --digest <TRANSACTION_DIGEST>
-```
-
-Or query all events for the package:
-
-```bash
-sui client events --package <PACKAGE_ID>
-```
 
 ## Error Codes
 
@@ -315,82 +269,6 @@ sui client events --package <PACKAGE_ID>
 - Wrap addresses in double quotes within square brackets
 - Use proper JSON array format: `'["0xaddr1","0xaddr2"]'`
 
-## Best Practices
-
-### 1. Test on Testnet First
-
-Always test your batch transfers on testnet before using mainnet:
-
-```bash
-sui client switch --env testnet
-```
-
-### 2. Verify Addresses
-
-Double-check all recipient addresses before executing. Wrong addresses cannot be reversed.
-
-### 3. Calculate Gas Budget
-
-Estimate gas based on number of recipients:
-
-- 1-10 recipients: 10000000 (0.01 SUI)
-- 11-50 recipients: 20000000 (0.02 SUI)
-- 51-100 recipients: 50000000 (0.05 SUI)
-
-### 4. Split Large Batches
-
-For very large airdrops (100+ recipients), split into multiple transactions to avoid gas limits.
-
-### 5. Keep Transaction Records
-
-Save transaction digests for auditing:
-
-```bash
-sui client call ... > transaction_record.txt
-```
-
-## Troubleshooting
-
-### Issue: "Insufficient gas"
-
-**Solution**: Increase the `--gas-budget` parameter:
-
-```bash
---gas-budget 20000000
-```
-
-### Issue: "Object not found"
-
-**Solution**: Verify the coin object ID exists and you own it:
-
-```bash
-sui client objects
-```
-
-### Issue: "Type mismatch"
-
-**Solution**: Ensure the `--type-args` matches your coin object's type exactly.
-
-### Issue: Command line truncates long vectors
-
-**Solution**: Save arguments to a file and use:
-
-```bash
-sui client call --package <PACKAGE_ID> --module batch_transfer --function batch_transfer @args.json
-```
-
-Where `args.json` contains:
-
-```json
-{
-  "type_args": ["0x2::sui::SUI"],
-  "args": [
-    "0xCOIN_OBJECT_ID",
-    ["0xaddr1", "0xaddr2", "0xaddr3"],
-    [1000000000, 2000000000, 3000000000]
-  ]
-}
-```
 
 ## Security Considerations
 
